@@ -1,0 +1,94 @@
+package com.dexxy.departmentManager.basic.service.impl;
+
+import com.dexxy.departmentManager.basic.dto.AddNewDepartmentDTO;
+import com.dexxy.departmentManager.basic.dto.DepartmentDTO;
+import com.dexxy.departmentManager.basic.entity.DepartmentEntity;
+import com.dexxy.departmentManager.basic.repository.DepartmentRepository;
+import com.dexxy.departmentManager.basic.service.DepartmentService;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
+@Service
+@RequiredArgsConstructor
+public class DepartmentServiceImpl implements DepartmentService {
+    private final DepartmentRepository departmentRepository;
+    private final ModelMapper modelMapper;
+
+    @Override
+    public List<DepartmentDTO> getAllDepartments() {
+        List<DepartmentEntity> departments = departmentRepository.findAll();
+
+        return departments.stream()
+                .map(departmentEntity -> modelMapper.map(departmentEntity, DepartmentDTO.class))
+                .toList();
+    }
+
+    @Override
+    public DepartmentDTO getDepartmentById(Long id) {
+        DepartmentEntity department = departmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Department with id " + id + " not found"));
+
+        return modelMapper.map(department, DepartmentDTO.class);
+    }
+
+    @Override
+    public DepartmentDTO createDepartment(AddNewDepartmentDTO newDepartmentDTO) {
+        DepartmentEntity department = modelMapper.map(newDepartmentDTO, DepartmentEntity.class);
+        departmentRepository.save(department);
+
+        return modelMapper.map(department, DepartmentDTO.class);
+    }
+
+    @Override
+    public Void deleteDepartmentById(Long id) {
+        if(!departmentRepository.existsById(id)) {
+            throw new IllegalArgumentException("Department with id " + id + " not found");
+        }
+        departmentRepository.deleteById(id);
+
+        return null;
+    }
+
+    @Override
+    public DepartmentDTO updateDepartmentById(Long id, AddNewDepartmentDTO newDepartmentDTO) {
+        DepartmentEntity department = departmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Department with id " + id + " not found"));
+
+        modelMapper.map(newDepartmentDTO, department);
+        departmentRepository.save(department);
+
+        return modelMapper.map(department, DepartmentDTO.class);
+    }
+
+    @Override
+    public DepartmentDTO patchDepartmentById(Long id, Map<String, Object> updates) {
+        DepartmentEntity department = departmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Department with id " + id + " not found"));
+
+        updates.forEach((key, value) -> {
+            switch(key) {
+                case "title":
+                    department.setTitle((String) value);
+                    break;
+
+                case "isActive":
+                    department.setIsActive((Boolean) value);
+                    break;
+
+                case "createdAt":
+                    department.setCreatedAt(LocalDateTime.parse((String) value));
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Invalid key " + key);
+            }
+        });
+        departmentRepository.save(department);
+        return modelMapper.map(department, DepartmentDTO.class);
+    }
+}
