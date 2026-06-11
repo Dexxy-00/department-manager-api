@@ -8,6 +8,7 @@ import com.dexxy.departmentManager.basic.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,6 +21,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public List<DepartmentDTO> getAllDepartments() {
         List<DepartmentEntity> departments = departmentRepository.findAll();
 
@@ -29,6 +31,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public DepartmentDTO getDepartmentById(Long id) {
         DepartmentEntity department = departmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Department with id " + id + " not found"));
@@ -37,6 +40,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    @Transactional
     public DepartmentDTO createDepartment(AddNewDepartmentDTO newDepartmentDTO) {
         DepartmentEntity department = modelMapper.map(newDepartmentDTO, DepartmentEntity.class);
         departmentRepository.save(department);
@@ -45,6 +49,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    @Transactional
     public Void deleteDepartmentById(Long id) {
         if(!departmentRepository.existsById(id)) {
             throw new IllegalArgumentException("Department with id " + id + " not found");
@@ -55,6 +60,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    @Transactional
     public DepartmentDTO updateDepartmentById(Long id, AddNewDepartmentDTO newDepartmentDTO) {
         DepartmentEntity department = departmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Department with id " + id + " not found"));
@@ -66,6 +72,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    @Transactional
     public DepartmentDTO patchDepartmentById(Long id, Map<String, Object> updates) {
         DepartmentEntity department = departmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Department with id " + id + " not found"));
