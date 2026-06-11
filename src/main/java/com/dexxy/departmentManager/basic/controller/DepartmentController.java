@@ -19,8 +19,9 @@ public class DepartmentController {
     private final DepartmentService departmentService;
 
     @GetMapping
-    public ResponseEntity<List<DepartmentDTO>> getAllDepartments() {
-        return ResponseEntity.ok(departmentService.getAllDepartments());
+    public ResponseEntity<List<DepartmentDTO>> getDepartments(@RequestParam(required = false) String title) {
+        if(title == null) return ResponseEntity.ok(departmentService.getAllDepartments());
+        return ResponseEntity.ok(departmentService.getDepartmentsByTitle(title));
     }
 
     @GetMapping("/{id}")

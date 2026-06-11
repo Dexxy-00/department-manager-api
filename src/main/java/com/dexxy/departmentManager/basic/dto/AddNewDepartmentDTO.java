@@ -16,8 +16,4 @@ public class AddNewDepartmentDTO {
 
     @NotNull
     private Boolean isActive;
-
-    @NotNull
-    @Past
-    private LocalDateTime createdAt;
 }
