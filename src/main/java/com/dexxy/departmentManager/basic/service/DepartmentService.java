@@ -21,4 +21,7 @@ public interface DepartmentService {
     DepartmentDTO patchDepartmentById(Long id, Map<String, Object> updates);
 
     List<DepartmentDTO> getDepartmentsByTitle(String title);
+
+    // Consolidated into a single method
+    List<DepartmentDTO> getDepartmentsByActivityStatus(Boolean isActive);
 }

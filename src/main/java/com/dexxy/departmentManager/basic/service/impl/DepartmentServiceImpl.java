@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -95,8 +94,19 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<DepartmentDTO> getDepartmentsByTitle(String title) {
         List<DepartmentEntity> departments = departmentRepository.findByTitle(title);
+
+        return departments.stream()
+                .map(departmentEntity -> modelMapper.map(departmentEntity, DepartmentDTO.class))
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DepartmentDTO> getDepartmentsByActivityStatus(Boolean isActive) {
+        List<DepartmentEntity> departments = departmentRepository.findByIsActive(isActive);
 
         return departments.stream()
                 .map(departmentEntity -> modelMapper.map(departmentEntity, DepartmentDTO.class))

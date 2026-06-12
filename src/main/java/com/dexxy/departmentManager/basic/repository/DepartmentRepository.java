@@ -10,4 +10,6 @@ import java.util.List;
 public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Long> {
 
     List<DepartmentEntity> findByTitle(String title);
+
+    List<DepartmentEntity> findByIsActive(Boolean isActive);
 }

@@ -19,9 +19,17 @@ public class DepartmentController {
     private final DepartmentService departmentService;
 
     @GetMapping
-    public ResponseEntity<List<DepartmentDTO>> getDepartments(@RequestParam(required = false) String title) {
-        if(title == null) return ResponseEntity.ok(departmentService.getAllDepartments());
-        return ResponseEntity.ok(departmentService.getDepartmentsByTitle(title));
+    public ResponseEntity<List<DepartmentDTO>> getDepartments(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) Boolean isActive) {
+
+        if (title != null) {
+            return ResponseEntity.ok(departmentService.getDepartmentsByTitle(title));
+        }
+        if (isActive != null) {
+            return ResponseEntity.ok(departmentService.getDepartmentsByActivityStatus(isActive));
+        }
+        return ResponseEntity.ok(departmentService.getAllDepartments());
     }
 
     @GetMapping("/{id}")
