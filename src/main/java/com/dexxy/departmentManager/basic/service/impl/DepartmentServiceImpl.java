@@ -86,10 +86,6 @@ public class DepartmentServiceImpl implements DepartmentService {
                     department.setIsActive((Boolean) value);
                     break;
 
-                case "createdAt":
-                    department.setCreatedAt(LocalDateTime.parse((String) value));
-                    break;
-
                 default:
                     throw new IllegalArgumentException("Invalid key " + key);
             }
