@@ -20,15 +20,9 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
             return body;
         }
 
-        if(body == null) {
-            return ApiResponse.builder()
-                    .message("Success")
-                    .build();
-        }
-
         return ApiResponse.builder()
                 .message("Success")
-                .data(body)
+                .data(body != null ? body : null)
                 .build();
     }
 }

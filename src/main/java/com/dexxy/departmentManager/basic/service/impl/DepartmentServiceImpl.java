@@ -7,8 +7,11 @@ import com.dexxy.departmentManager.basic.repository.DepartmentRepository;
 import com.dexxy.departmentManager.basic.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Map;
 
@@ -20,12 +23,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DepartmentDTO> getAllDepartments() {
-        List<DepartmentEntity> departments = departmentRepository.findAll();
-
-        return departments.stream()
-                .map(departmentEntity -> modelMapper.map(departmentEntity, DepartmentDTO.class))
-                .toList();
+    public Page<DepartmentDTO> getAllDepartments(Pageable pageable) {
+        Page<DepartmentEntity> departmentsPage = departmentRepository.findAll(pageable);
+        return departmentsPage.map(departmentEntity -> modelMapper.map(departmentEntity, DepartmentDTO.class));
     }
 
     @Override

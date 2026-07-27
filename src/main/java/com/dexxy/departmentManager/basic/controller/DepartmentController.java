@@ -5,11 +5,14 @@ import com.dexxy.departmentManager.basic.dto.DepartmentDTO;
 import com.dexxy.departmentManager.basic.service.DepartmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,17 +22,14 @@ public class DepartmentController {
     private final DepartmentService departmentService;
 
     @GetMapping
-    public ResponseEntity<List<DepartmentDTO>> getDepartments(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) Boolean isActive) {
-
-        if (title != null) {
-            return ResponseEntity.ok(departmentService.getDepartmentsByTitle(title));
-        }
-        if (isActive != null) {
-            return ResponseEntity.ok(departmentService.getDepartmentsByActivityStatus(isActive));
-        }
-        return ResponseEntity.ok(departmentService.getAllDepartments());
+    public ResponseEntity<Page<DepartmentDTO>> getDepartments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "ASC") Sort.Direction direction
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        return ResponseEntity.ok(departmentService.getAllDepartments(pageable));
     }
 
     @GetMapping("/{id}")
@@ -48,6 +48,8 @@ public class DepartmentController {
 
         return ResponseEntity.noContent().build();
     }
+
+
 
     @PutMapping("/{id}")
     public ResponseEntity<DepartmentDTO> updateDepartment(@PathVariable Long id, @Valid @RequestBody AddNewDepartmentDTO newDepartmentDTO) {

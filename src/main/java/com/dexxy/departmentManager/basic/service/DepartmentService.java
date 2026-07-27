@@ -2,13 +2,15 @@ package com.dexxy.departmentManager.basic.service;
 
 import com.dexxy.departmentManager.basic.dto.AddNewDepartmentDTO;
 import com.dexxy.departmentManager.basic.dto.DepartmentDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
 
 public interface DepartmentService {
 
-    List<DepartmentDTO> getAllDepartments();
+    Page<DepartmentDTO> getAllDepartments(Pageable pageable);
 
     DepartmentDTO getDepartmentById(Long id);
 
@@ -22,6 +24,5 @@ public interface DepartmentService {
 
     List<DepartmentDTO> getDepartmentsByTitle(String title);
 
-    // Consolidated into a single method
     List<DepartmentDTO> getDepartmentsByActivityStatus(Boolean isActive);
 }
