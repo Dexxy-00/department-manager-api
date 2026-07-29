@@ -5,6 +5,8 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -22,4 +24,7 @@ public class DepartmentEntity {
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "department")
+    private List<EmployeeEntity> employees = new ArrayList<>();
 }
