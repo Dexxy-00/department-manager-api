@@ -3,6 +3,7 @@ package com.dexxy.departmentManager.basic.service.impl;
 import com.dexxy.departmentManager.basic.dto.AddNewDepartmentDTO;
 import com.dexxy.departmentManager.basic.dto.DepartmentDTO;
 import com.dexxy.departmentManager.basic.entity.DepartmentEntity;
+import com.dexxy.departmentManager.basic.exception.ResourceNotFoundException;
 import com.dexxy.departmentManager.basic.repository.DepartmentRepository;
 import com.dexxy.departmentManager.basic.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Transactional(readOnly = true)
     public DepartmentDTO getDepartmentById(Long id) {
         DepartmentEntity department = departmentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Department with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Department with id " + id + " not found"));
 
         return modelMapper.map(department, DepartmentDTO.class);
     }
@@ -50,7 +51,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Transactional
     public Void deleteDepartmentById(Long id) {
         if(!departmentRepository.existsById(id)) {
-            throw new IllegalArgumentException("Department with id " + id + " not found");
+            throw new ResourceNotFoundException("Department with id " + id + " not found");
         }
         departmentRepository.deleteById(id);
 
@@ -61,7 +62,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Transactional
     public DepartmentDTO updateDepartmentById(Long id, AddNewDepartmentDTO newDepartmentDTO) {
         DepartmentEntity department = departmentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Department with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Department with id " + id + " not found"));
 
         modelMapper.map(newDepartmentDTO, department);
         departmentRepository.save(department);
@@ -73,7 +74,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Transactional
     public DepartmentDTO patchDepartmentById(Long id, Map<String, Object> updates) {
         DepartmentEntity department = departmentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Department with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Department with id " + id + " not found"));
 
         updates.forEach((key, value) -> {
             switch(key) {

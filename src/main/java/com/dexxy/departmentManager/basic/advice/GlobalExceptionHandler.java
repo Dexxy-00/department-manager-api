@@ -1,5 +1,6 @@
 package com.dexxy.departmentManager.basic.advice;
 
+import com.dexxy.departmentManager.basic.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -10,14 +11,24 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<?>> handleIllegalArgumentException(IllegalArgumentException e) {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> handleResourceNotFoundException(ResourceNotFoundException e) {
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .message(e.getMessage())
                 .status(HttpStatus.NOT_FOUND)
                 .build();
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<?>> handleIllegalArgumentException(IllegalArgumentException e) {
+        ApiResponse<?> apiResponse = ApiResponse.builder()
+                .message(e.getMessage())
+                .status(HttpStatus.BAD_REQUEST)
+                .build();
+
+        return ResponseEntity.badRequest().body(apiResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
