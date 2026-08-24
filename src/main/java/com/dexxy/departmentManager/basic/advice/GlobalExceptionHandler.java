@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponse<?>> handleIllegalArgumentException(IllegalArgumentException e) {
-        ApiResponse<?> apiResponse = ApiResponse.<Void>builder()
+        ApiResponse<?> apiResponse = ApiResponse.builder()
                 .message(e.getMessage())
                 .status(HttpStatus.NOT_FOUND)
                 .build();
@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
 
-        ApiResponse<?> apiResponse = ApiResponse.<Void>builder()
+        ApiResponse<?> apiResponse = ApiResponse.builder()
                 .message("Errors: " + errors)
                 .status(HttpStatus.BAD_REQUEST)
                 .build();
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleException(Exception e) {
-        ApiResponse<?> apiResponse = ApiResponse.<Void>builder()
+        ApiResponse<?> apiResponse = ApiResponse.builder()
                 .message("Unexpected error occurred: " + e.getMessage())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .build();
